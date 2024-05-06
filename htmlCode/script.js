@@ -1,52 +1,77 @@
-const RGBselect = document.querySelector("#RGBselector");
+// AJAX
 
-const playBtn = document.querySelector("#playButton");
+$.ajaxSetup({timeout:1000});
 
-const songSelector = document.querySelector("#song-select");
+//==============================================================================================
+
+// LEDS
+
+const redLed = document.querySelector("#red");
+const blueLed = document.querySelector("#blue");
+const yellowLed = document.querySelector("#yellow");
 
 function toggleLed(id, element){
-    if (element.checked) {
-        console.log(`${id}: ON`);
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                console.log(this.responseText);
-            }
-        };
-        
-        xhr.open("GET", `/${id}/${element.checked ? 'ON' : 'OFF'}`, true);
-        xhr.send();
-    } else {
-        console.log(`${id}: OFF`);
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", `/${id}/${element.checked ? 'ON' : 'OFF'}`, true);
-        xhr.send();
-    }
+    console.log(`${id}: New state selected: ` + element.value);
+    $.get("/?value=" + element.value + "&");
+    {Connection: close};
+    element.value = element.value == "on" ? "off" : "on";
 }
+
+//==============================================================================================
+
+// RGB LED
+
+const RGBselect = document.querySelector("#RGBselector");
 
 function rgbLEDchange(id, element){
     console.log(`${id}: New color selected: ` + element.value);
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            console.log(this.responseText);
-        }
-    };
-
-    xhr.open("GET", `/${id}/${element.value}`, true);
-    xhr.send();
+    $.get("/?value=" + element.value + "&");
+    {Connection: close};
 }
+
+//==============================================================================================
+
+// SERVO MOTOR
+
+var slider = document.getElementById("servoSlider");
+var servoP = document.getElementById("servoPos");
+servoP.innerHTML = slider.value;
+
+function servo(pos) {
+    $.get("/?value=" + pos + "&");
+    {Connection: close};
+}
+
+slider.oninput = function() {
+    slider.value = this.value;
+    servoP.innerHTML = this.value;
+}
+
+//===============================================================================================
+
+// PIEZO
+
+const playBtn = document.querySelector("#playButton");
+const songSelector = document.querySelector("#song-select");
 
 function songSelection(id){
     console.log(`${id}: New song selected`);
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            console.log(this.responseText);
-        }
-    };
-
-
-    xhr.open("GET", `/${id}/${songSelector.value}`, true);
-    xhr.send();
+    $.get("/?value=" + songSelector.value + "&");
+    {Connection: close};
 }
+
+//===============================================================================================
+
+// ULTRASONIC SENSOR
+
+const ultrasonicBox = document.querySelector("#ultrasonicBox");
+
+setInterval(function() {
+    $.get("/?value=ultrasonic&", function() {
+        console.log(1);
+        ultrasonicBox.innerHTML = 1 + " cm";
+    });
+    {Connection: close};
+}, 1000);
+
+//===============================================================================================

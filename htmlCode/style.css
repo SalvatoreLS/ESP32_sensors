@@ -153,27 +153,12 @@
     gap: 30px;
 }
 
-.servo_button{
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    font-size: 30px;
-    border: 2px solid black;
-    border-radius: 50%;
-}
-
 .ultra_sensor_box{
     font-size: 24px;
     padding: 10px 0px;
     border: 2px solid black;
     justify-content: center;
     align-items: center;
-}
-
-#stepsServo{
-    width: 50px;
 }
 
 .info{
@@ -190,4 +175,10 @@
 .piezoBox{
     display: flex;
     gap: 10px;
+}
+
+.sliderServo{
+    position: relative;
+    width: 80%;
+    display: block;
 }
