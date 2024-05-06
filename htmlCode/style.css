@@ -1,0 +1,193 @@
+.grid_container{
+    display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 10px;
+}
+
+.grid_el{
+    background-color: #ddd;
+    padding: 20px;
+    text-align: center;
+}
+
+.title_sensor {
+    font-size: 20px;
+    display: flex;
+    border-bottom: 1px solid #495057;
+}
+
+#main_title{
+    font-size: 30px;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 3px solid #495057;
+}
+
+#id1{
+    grid-column: 1;
+    grid-row: 1;
+}
+
+#id2{
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#id3{
+    grid-column: 1;
+    grid-row: 2;
+}
+
+#id4{
+    grid-row: 2;
+    grid-column: 2;
+}
+
+#id5{
+    grid-row: 3;
+    grid-column: 2;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+/* COLORED BUTTONS */ 
+
+#redLed{
+    border-bottom: 3px solid red;
+}
+
+#blueLed{
+    border-bottom: 3px solid blue;
+}
+
+#yellowLed{
+    border-bottom: 3px solid yellow;
+}
+
+.red input:checked+.slider {
+    background-color: red;
+}
+
+.red input:focus+.slider {
+    box-shadow: 0 0 1px red;
+}
+
+.red input:checked+.slider::before {
+    transform: translateX(26px);
+}
+
+.blue input:checked+.slider {
+    background-color: blue;
+}
+
+.blue input:focus+.slider {
+    box-shadow: 0 0 1px blue;
+}
+
+.blue input:checked+.slider::before {
+    transform: translateX(26px);
+}
+
+.yellow input:checked+.slider {
+    background-color: yellow;
+}
+
+.yellow input:focus+.slider {
+    box-shadow: 0 0 1px yellow;
+}
+
+.yellow input:checked+.slider::before {
+    transform: translateX(26px);
+}
+
+
+.buttons{
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+.stepsBox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.servoBox{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.servo_button{
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    font-size: 30px;
+    border: 2px solid black;
+    border-radius: 50%;
+}
+
+.ultra_sensor_box{
+    font-size: 24px;
+    padding: 10px 0px;
+    border: 2px solid black;
+    justify-content: center;
+    align-items: center;
+}
+
+#stepsServo{
+    width: 50px;
+}
+
+.info{
+    font-size: 15px;
+    border: 1px solid black;
+    padding: 7px;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.piezoBox{
+    display: flex;
+    gap: 10px;
+}

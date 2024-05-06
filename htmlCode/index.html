@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Sensors Interface</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1 id="main_title">Multi-Sensors</h1>
+        <div class="grid_container">
+            <div class="grid_el" id="el1">
+                <h2 class="title_sensor">LED</h2>
+                <div class="buttons">
+                <label class="toggle-switch red" id="redLed">
+                    <input type="checkbox" onchange="toggleLed('redLED', this)" id="redButton">
+                    <span class="slider"></span>
+                </label>
+                <label class="toggle-switch yellow" id="yellowLed">
+                    <input type="checkbox" onchange="toggleLed('yellowLED', this)" id="yellowButton">
+                    <span class="slider"></span>
+                </label>
+                <label class="toggle-switch blue" id="blueLed">
+                    <input type="checkbox" onchange="toggleLed('blueLED', this)" id="blueButton">
+                    <span class="slider"></span>
+                </label>
+                </div>
+            </div>
+
+            <div class="grid_el" id="el2">
+                <h2 class="title_sensor">RGB LED</h2>
+                <div>
+                    <input type="color" onchange="rgbLEDchange('RGB', this)" id="RGBselector">
+                    <label for="rgbLed_input"></label>
+                </div>
+            </div>
+
+            <div class="grid_el" id="el3">
+                <h2 class="title_sensor">PIEZO</h2>
+                <div class="piezoBox">
+                    <div class="songSelection">
+                        <label for="song-select">Choose a song:</label>
+
+                        <select name="songs" id="song-select">
+                        <option value="none">--Please choose an option--</option>
+                        <option value="song1">Song 1</option>
+                        <option value="song2">Song 2</option>
+                        <option value="song3">Song 3</option>
+                        <option value="song4">Song 4</option>
+                        <option value="song5">Song 5</option>
+                        <option value="song6">Song 6</option>
+                        </select>
+                    </div>
+                    <button type="button" id="playButton" onclick="songSelection('song')">PLAY</button>
+                </div>
+            </div>
+
+            <div class="grid_el" id="el4">
+                <h2 class="title_sensor servoDiv">SERVO</h2>
+                <div class="servoBox">
+                    <div class="stepsBox">Angle
+                        <input type="number" name="nSteps" id="stepsServo">
+                    </div>
+                    <div class="buttons">
+                        <button type="button" class="servo_button" id="servoLeftButton"> < </button>
+                        <button type="button" class="servo_button" id="servoRightButton"> > </button>
+                    </div>
+                    <button type="button" class="info" id="infoServo"> ? </button>
+                </div>
+            </div>
+
+            <div class="grid_el" id="el5">
+                <h2 class="title_sensor">ULTRASONIC SENSOR</h2>
+                <div class="ultra_sensor_box">Null cm</div>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
