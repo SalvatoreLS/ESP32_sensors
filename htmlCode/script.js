@@ -12,8 +12,22 @@ const yellowLed = document.querySelector("#yellow");
 
 function toggleLed(id, element){
     console.log(`${id}: New state selected: ` + element.value);
-    $.get("/?value=" + element.value + "&");
-    {Connection: close};
+
+    $.ajax({
+        type: 'GET',
+        dataType:"jsonp",
+        url: window.location.href + id + '/' + element.value + '/',
+        headers:{
+            'Authorization' : 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBWZXIiOiIwLjAuMCIsImV4cCI6NDcyNjM4OTEyMiwibG9jYWxlIjoiIiwibWFzdGVyVmVyIjoiIiwicGxhdGZvcm0iOiIiLCJwbGF0Zm9ybVZlciI6IiIsInVzZXJJZCI6IiJ9.QIZbmB5_9Xlap_gDhjETfMI6EAmR15yBtIQkWFWJkrg',
+        },
+        success: function (data, status, xhr) {
+            console.log(id + " " + element.value + " success");
+        },
+        error: function (jqXhr, textStatus, errorMessage){
+            console.log(id + " " + element.value + " error");
+        }
+    })
+
     element.value = element.value == "on" ? "off" : "on";
 }
 
@@ -25,21 +39,27 @@ const RGBselect = document.querySelector("#RGBselector");
 
 function rgbLEDchange(id, element){
     console.log(`${id}: New color selected: ` + element.value);
-    $.get("/?value=" + element.value + "&");
-    {Connection: close};
+    
+    $.ajax({
+        type: 'GET',
+        url: "/?" + id + "=" + element.value + "&",
+        dataType: 'json', // Add the dataType parameter with value 'json'
+        success: function () { // Remove unused variables 'data', 'status', and 'xhr'
+            console.log(id + " " + element.value + " success");
+        },
+        error: function () { // Remove unused variables 'jqXhr', 'textStatus', and 'errorMessage'
+            console.log(id + " " + element.value + " error");
+        }
+    });
 }
 
-//==============================================================================================
+//===============================================================================================
 
-// SERVO MOTOR
-
-var slider = document.getElementById("servoSlider");
 var servoP = document.getElementById("servoPos");
 servoP.innerHTML = slider.value;
 
 function servo(pos) {
-    $.get("/?value=" + pos + "&");
-    {Connection: close};
+    $.get("/?servo=" + pos + "&");
 }
 
 slider.oninput = function() {
@@ -56,7 +76,7 @@ const songSelector = document.querySelector("#song-select");
 
 function songSelection(id){
     console.log(`${id}: New song selected`);
-    $.get("/?value=" + songSelector.value + "&");
+    $.get("/?song=" + songSelector.value + "&");
     {Connection: close};
 }
 
