@@ -1,8 +1,8 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 
-const char* ssid = "Redmi Note 10";
-const char* password = "coronapilus";
+const char* ssid = "";
+const char* password = "";
 
 // LED pins
 #define RED_LED_PIN 2
