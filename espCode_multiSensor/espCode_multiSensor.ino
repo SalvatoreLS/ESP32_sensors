@@ -92,9 +92,9 @@ void loop() {
 void handleGetRequest(String header){
 
   // RED LED
-  if (header.indexOf("GET /redLED/")>=0) {
-    pos1 = header.indexOf('/redLED/');
-    pos2 = header.indexOf('/?');
+  if (header.indexOf("GET /?redLED=")>=0) {
+    pos1 = header.indexOf("/?redLED=");
+    pos2 = header.indexOf("&");
     valueString = header.substring(pos1+1, pos2);
 
     // Turn on/off the red LED
@@ -109,7 +109,7 @@ void handleGetRequest(String header){
 
   // YELLOW LED
   else if (header.indexOf("GET /?yellowLED=")>=0) {
-    pos1 = header.indexOf('=');
+    pos1 = header.indexOf('/?yellowLED=');
     pos2 = header.indexOf('&');
     valueString = header.substring(pos1+1, pos2);
 
@@ -125,7 +125,7 @@ void handleGetRequest(String header){
 
   // BLUE LED
   else if (header.indexOf("GET /?blueLED=")>=0) {
-    pos1 = header.indexOf('=');
+    pos1 = header.indexOf('/?blueLED=');
     pos2 = header.indexOf('&');
     valueString = header.substring(pos1+1, pos2);
 
@@ -141,7 +141,7 @@ void handleGetRequest(String header){
 
   // RGB LED
   else if(header.indexOf("GET /?RGB=")>=0){
-    pos1 = header.indexOf('=');
+    pos1 = header.indexOf('/?RGB=');
     pos2 = header.indexOf('&');
     valueString = header.substring(pos1+1, pos2);
     
@@ -151,7 +151,7 @@ void handleGetRequest(String header){
 
   // SERVO
   else if (header.indexOf("GET /?servo=")>=0) {
-    pos1 = header.indexOf('=');
+    pos1 = header.indexOf('/?servo=');
     pos2 = header.indexOf('&');
     valueString = header.substring(pos1+1, pos2);
 
@@ -161,7 +161,7 @@ void handleGetRequest(String header){
 
   // PIEZO
   else if (header.indexOf("GET /?song=")>=0) {
-    pos1 = header.indexOf('=');
+    pos1 = header.indexOf('/?song=');
     pos2 = header.indexOf('&');
     valueString = header.substring(pos1+1, pos2);
 
@@ -359,9 +359,6 @@ void htmlCodePrint(WiFiClient client){
   client.println("}");
   client.println("</style>");
 
-  client.println("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>");
-  client.println("<script src=\"https://code.jquery.com/jquery-3.3.1.min.js\"></script>");
-
   client.println("</head>");
 
   client.println("<body>");
@@ -381,68 +378,106 @@ void htmlCodePrint(WiFiClient client){
   
   client.println("</div>");
 
-  // SCRIPT
   client.println("<script>");
-  client.println("$.ajaxSetup({timeout:1000});");
-  client.println("const redLed = document.querySelector(\"#redButton\");");
-  client.println("const blueLed = document.querySelector(\"#blueButton\");");
-  client.println("const yellowLed = document.querySelector(\"#yellowButton\");");
-
+  client.println("const redLed = document.querySelector(\"#red\");");
+  client.println("const blueLed = document.querySelector(\"#blue\");");
+  client.println("const yellowLed = document.querySelector(\"#yellow\");");
+  client.println("");
   client.println("function toggleLed(id, element) {");
-  client.println("  console.log(`${id}: New state selected: ` + element.value);");
-  client.println("  $.ajax({");
-  client.println("    type: 'GET',");
-  client.println("    dataType: 'jsonp',");
-  client.println("    url: window.location.href + id + '/' + element.value + '/',");
-  client.println("    headers: {");
-  client.println("      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBWZXIiOiIwLjAuMCIsImV4cCI6NDcyNjM4OTEyMiwibG9jYWxlIjoiIiwibWFzdGVyVmVyIjoiIiwicGxhdGZvcm0iOiIiLCJwbGF0Zm9ybVZlciI6IiIsInVzZXJJZCI6IiJ9.QIZbmB5_9Xlap_gDhjETfMI6EAmR15yBtIQkWFWJkrg',");
-  client.println("    },");
-  client.println("    success: function (data, status, xhr) {");
-  client.println("      console.log(id + ' ' + element.value + ' success');");
-  client.println("    },");
-  client.println("    error: function (jqXhr, textStatus, errorMessage) {");
-  client.println("      console.log(id + ' ' + element.value + ' error');");
-  client.println("    }");
-  client.println("  });");
-  client.println("  element.value = element.value == 'on' ? 'off' : 'on';");
+  client.println("    console.log(`${id}: New state selected: ` + element.value);");
+  client.println("");
+  client.println("    fetch(\"/?\" + id + \"=\" + element.value + \"&\")");
+  client.println("        .then(response => {");
+  client.println("            if (response.ok) {");
+  client.println("                console.log(id + \" \" + element.value + \" success\");");
+  client.println("            } else {");
+  client.println("                console.log(id + \" \" + element.value + \" error\");");
+  client.println("            }");
+  client.println("        })");
+  client.println("        .catch(error => {");
+  client.println("            console.log(id + \" \" + element.value + \" error: \" + error);");
+  client.println("        });");
+  client.println("");
+  client.println("    element.value = element.value == \"on\" ? \"off\" : \"on\";");
   client.println("}");
-
+  client.println("");
   client.println("const RGBselect = document.querySelector(\"#RGBselector\");");
+  client.println("");
   client.println("function rgbLEDchange(id, element) {");
-  client.println("  console.log(`${id}: New color selected: ` + element.value);");
-  client.println("  $.get(\"/?\" + id + \"=\" + element.value + \"&\", {Connection: \"close\"});");
+  client.println("    console.log(`${id}: New color selected: ` + element.value);");
+  client.println("");
+  client.println("    fetch(\"/?\" + id + \"=\" + element.value + \"&\")");
+  client.println("        .then(response => {");
+  client.println("            if (response.ok) {");
+  client.println("                console.log(id + \" \" + element.value + \" success\");");
+  client.println("            } else {");
+  client.println("                console.log(id + \" \" + element.value + \" error\");");
+  client.println("            }");
+  client.println("        })");
+  client.println("        .catch(error => {");
+  client.println("            console.log(id + \" \" + element.value + \" error: \" + error);");
+  client.println("        });");
   client.println("}");
-
-  client.println("var slider = document.getElementById(\"servoSlider\");");
+  client.println("");
   client.println("var servoP = document.getElementById(\"servoPos\");");
   client.println("servoP.innerHTML = slider.value;");
-
+  client.println("");
   client.println("function servo(pos) {");
-  client.println("  $.get(\"/?slider=\" + pos + \"&\", {Connection: \"close\"});");
+  client.println("    fetch(\"/?servo=\" + pos + \"&\")");
+  client.println("        .then(response => {");
+  client.println("            if (response.ok) {");
+  client.println("                console.log(\"Servo position set to: \" + pos);");
+  client.println("            } else {");
+  client.println("                console.log(\"Error setting servo position\");");
+  client.println("            }");
+  client.println("        })");
+  client.println("        .catch(error => {");
+  client.println("            console.log(\"Error setting servo position: \" + error);");
+  client.println("        });");
   client.println("}");
-
-  client.println("slider.oninput = function() {");
-  client.println("  slider.value = this.value;");
-  client.println("  servoP.innerHTML = this.value;");
+  client.println("");
+  client.println("slider.oninput = function () {");
+  client.println("    slider.value = this.value;");
+  client.println("    servoP.innerHTML = this.value;");
   client.println("}");
-
+  client.println("");
   client.println("const playBtn = document.querySelector(\"#playButton\");");
   client.println("const songSelector = document.querySelector(\"#song-select\");");
-  
+  client.println("");
   client.println("function songSelection(id) {");
-  client.println("  console.log(`${id}: New song selected`);");
-  client.println("  $.get(\"/?\" + id + \"=\" + songSelector.value + \"&\", {Connection: \"close\"});");
+  client.println("");
+  client.println("    console.log(`${id}: New song selected`);");
+  client.println("    fetch(\"/?song=\" + songSelector.value + \"&\")");
+  client.println("        .then(response => {");
+  client.println("            if (response.ok) {");
+  client.println("                console.log(id + \" \" + songSelector.value + \" success\");");
+  client.println("            } else {");
+  client.println("                console.log(id + \" \" + songSelector.value + \" error\");");
+  client.println("            }");
+  client.println("        })");
+  client.println("        .catch(error => {");
+  client.println("            console.log(id + \" \" + songSelector.value + \" error: \" + error);");
+  client.println("        });");
   client.println("}");
-
+  client.println("");
   client.println("const ultrasonicBox = document.querySelector(\"#ultrasonicBox\");");
-
-  client.println("setInterval(function() {");
-  client.println("  $.get(\"/?value=ultrasonic&\", function(data) {");
-  client.println("    console.log(data);");
-  client.println("    ultrasonicBox.innerHTML = data + \" cm\";");
-  client.println("  }, {Connection: \"close\"});");
+  client.println("");
+  client.println("setInterval(function () {");
+  client.println("");
+  client.println("    fetch(\"/?value=ultrasonic&\")");
+  client.println("        .then(response => {");
+  client.println("            if (response.ok) {");
+  client.println("                response.text().then(data => {");
+  client.println("                    ultrasonicBox.innerHTML = data + \" cm\";");
+  client.println("                });");
+  client.println("            } else {");
+  client.println("                console.log(\"Error getting ultrasonic value\");");
+  client.println("            }");
+  client.println("        })");
+  client.println("        .catch(error => {");
+  client.println("            console.log(\"Error getting ultrasonic value: \" + error);");
+  client.println("        });");
   client.println("}, 1000);");
-
   client.println("</script>");
 
   client.println("</body>");
