@@ -1,22 +1,28 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
+#include <Servo.h>
 
 const char* ssid = "";
 const char* password = "";
 
 // LED pins
 #define RED_LED_PIN 2
-#define YELLOW_LED_PIN 3
+#define YELLOW_LED_PIN 4
 #define BLUE_LED_PIN 5
+
+// RGB LED pins
+#define RGB_RED_LED_PIN 14
+#define RGB_GREEN_LED_PIN 12
+#define RGB_BLUE_LED_PIN 13
 
 // Piezo buzzer pin
 #define PIEZO_PIN 10
 
 // Servo pin
-#define SERVO_PIN 9
+#define SERVO_PIN 26
 
 void htmlCodePrint(WiFiClient);
-void handleGetRequest(String);
+int handleGetRequest(String);
 
 void RGBledColor(String);
 void servoPosition(String);
@@ -27,8 +33,20 @@ String header;
 String valueString = String(5);
 int pos1 = 0, pos2 = 0;
 
+Servo servoMotor;
+
 void setup() {
   Serial.begin(74880);
+
+  pinMode(RED_LED_PIN, OUTPUT);
+  pinMode(BLUE_LED_PIN, OUTPUT);
+  pinMode(YELLOW_LED_PIN, OUTPUT);
+
+  pinMode(RGB_RED_LED_PIN, OUTPUT);
+  pinMode(RGB_GREEN_LED_PIN, OUTPUT);
+  pinMode(RGB_BLUE_LED_PIN, OUTPUT);
+
+  servoMotor.attach(SERVO_PIN);
 
   delay(10);
 
@@ -57,45 +75,56 @@ void loop() {
 
   if (client){
     Serial.println("New Client.");
-    String currentLine = "";
+    char currentLine[1000];
+    int fl = 0;
+    int i = 0;
     while (client.connected()){
+      
       if (client.available()){
-        char c = client.read();
-        Serial.write(c);
-        if (c == '\n'){
+        if (!fl) {
+          client.println("HTTP/1.1 200 OK");
+          client.println("Content-type:text/html");
+          client.println();
 
-          if (currentLine.length() == 0){
-            client.println("HTTP/1.1 200 OK");
-            client.println("Content-type:text/html");
-            client.println();
+          htmlCodePrint(client);
 
-            htmlCodePrint(client);
-
-            client.println();
-
-            break;
-          } else{
-            currentLine = "";
-          }
-        } else if (c != '\r'){
-          currentLine += c;
+          client.println();
+          fl = 1;
         }
 
-        // GET request handler
-        handleGetRequest(header);
+        char c = client.read();
 
+
+        if (c == '\n'){
+          // GET request handlerSerial.write(c);
+          currentLine[i] = '\0';
+          String buff(currentLine);
+          if (handleGetRequest(buff)) break;
+          i = 0;
+        }
+        else {
+          currentLine[i++] = c;
+        }
+      }
+      else {
+        i = 0;
       }
     }
+    fl = 0;
   }
 }
 
-void handleGetRequest(String header){
+
+int handleGetRequest(String header){
+  if (header.indexOf("GET") == -1) return 0;
 
   // RED LED
+  Serial.println(header);
   if (header.indexOf("GET /?redLED=")>=0) {
-    pos1 = header.indexOf("/?redLED=");
+    pos1 = header.indexOf("=");
     pos2 = header.indexOf("&");
     valueString = header.substring(pos1+1, pos2);
+    Serial.println(valueString);
 
     // Turn on/off the red LED
     if (valueString == "on") {
@@ -112,6 +141,7 @@ void handleGetRequest(String header){
     pos1 = header.indexOf('/?yellowLED=');
     pos2 = header.indexOf('&');
     valueString = header.substring(pos1+1, pos2);
+    Serial.println(valueString);
 
     // Turn on/off the yellow LED
     if (valueString == "on") {
@@ -128,6 +158,7 @@ void handleGetRequest(String header){
     pos1 = header.indexOf('/?blueLED=');
     pos2 = header.indexOf('&');
     valueString = header.substring(pos1+1, pos2);
+    Serial.println(valueString);
 
     // Turn on/off the blue LED
     if (valueString == "on") {
@@ -141,7 +172,7 @@ void handleGetRequest(String header){
 
   // RGB LED
   else if(header.indexOf("GET /?RGB=")>=0){
-    pos1 = header.indexOf('/?RGB=');
+    pos1 = header.indexOf('/?RGB=#');
     pos2 = header.indexOf('&');
     valueString = header.substring(pos1+1, pos2);
     
@@ -173,28 +204,41 @@ void handleGetRequest(String header){
 
   // ULTRASONIC SENSOR
   else if (header.indexOf("GET /?value=ultrasonic&")>=0) {
-
     // Get ultrasonic sensor value
 
     // TO BE IMPLEMENTED
   }
+  return 1;
 }
 
 void RGBledColor(String color){
 
-  // TO BE IMPLEMENTED
+  // Given color as HEX value change color on RGB led
+  int red = 0, green = 0, blue = 0;
+
+  red = (int)strtol(color.substring(1, 3).c_str(), NULL, 16);
+  green = (int)strtol(color.substring(3, 5).c_str(), NULL, 16);
+  blue = (int)strtol(color.substring(5, 7).c_str(), NULL, 16);
+
+  analogWrite(RGB_RED_LED_PIN, red);
+  analogWrite(RGB_GREEN_LED_PIN, green);
+  analogWrite(RGB_BLUE_LED_PIN, blue);    
+
+  // NOT YET TESTED
 
   return;
 }
 
 void servoPosition(String angle){
-  // Complete this function to move the servo to the desired angle
+
+  // Convert string to integer
+  int servoAngle = angle.toInt();
   
-  // TO BE IMPLEMENTED
+  servoMotor.write(servoAngle);
+  delay(15);
 
   return;
 }
-
 
 
 void htmlCodePrint(WiFiClient client){
