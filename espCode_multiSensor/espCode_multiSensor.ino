@@ -1,6 +1,8 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
-#include <Servo.h>
+#include <Servo.h> //https://github.com/alunit3/ServoESP32/
+
+Servo servo1;
 
 const char* ssid = "";
 const char* password = "";
@@ -33,8 +35,6 @@ String header;
 String valueString = String(5);
 int pos1 = 0, pos2 = 0;
 
-Servo servoMotor;
-
 void setup() {
   Serial.begin(74880);
 
@@ -46,7 +46,7 @@ void setup() {
   pinMode(RGB_GREEN_LED_PIN, OUTPUT);
   pinMode(RGB_BLUE_LED_PIN, OUTPUT);
 
-  servoMotor.attach(SERVO_PIN);
+  servo1.attach(SERVO_PIN);
 
   delay(10);
 
@@ -234,7 +234,7 @@ void servoPosition(String angle){
   // Convert string to integer
   int servoAngle = angle.toInt();
   
-  servoMotor.write(servoAngle);
+  servo1.write(servoAngle);
   delay(15);
 
   return;
